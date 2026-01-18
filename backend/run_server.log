@@ -1,0 +1,73 @@
+/Users/utkarsh/Downloads/credit-risk-mvp/backend/.venv/lib/python3.14/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+INFO:     Started server process [23732]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50515 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "POST /api/applications/ HTTP/1.1" 201 Created
+/Users/utkarsh/Downloads/credit-risk-mvp/backend/src/models/feature_engineering.py:100: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  X_num = self.scaler.transform(df[self.numeric_cols].fillna(0))
+/Users/utkarsh/Downloads/credit-risk-mvp/backend/src/models/feature_engineering.py:100: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  X_num = self.scaler.transform(df[self.numeric_cols].fillna(0))
+INFO:     127.0.0.1:50517 - "POST /api/risk-assessments/calculate HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51049 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51263 - "GET /api/applications HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:51324 - "GET /api/applications HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:51330 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51681 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51788 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51985 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51986 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51988 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51987 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51992 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52132 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52133 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52135 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52134 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52287 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52288 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52289 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52290 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52367 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52367 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52476 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52477 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52479 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52478 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52493 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52639 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52640 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52641 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52642 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52653 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52669 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52687 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52785 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52786 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52787 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52788 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52791 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52792 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52793 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52794 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52801 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52814 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52835 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52929 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52930 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52942 - "GET /api/applications/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52943 - "GET /api/risk-assessments/application/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52945 - "GET /api/risk-assessments/application/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52944 - "GET /api/risk-assessments/application/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52959 - "GET /api/applications/undefined HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:52959 - "GET /api/applications/undefined HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:52962 - "GET /api/applications/undefined HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:52962 - "GET /api/applications/undefined HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:52976 - "OPTIONS /api/applications/ HTTP/1.1" 405 Method Not Allowed
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [23732]

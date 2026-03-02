@@ -112,6 +112,7 @@ export async function getApplications(): Promise<Application[]> {
         feature_contributions: featureContributions,
         data_provenance: [],
         audit_trail: [],
+        status: a.status || "pending",
       } as Application
     })
   )
@@ -222,6 +223,7 @@ export async function getApplicationById(id: string | number): Promise<Applicati
     feature_contributions: featureContributions,
     data_provenance: [],
     audit_trail: [],
+    status: a.status || "pending",
   } as Application
 }
 

@@ -168,6 +168,16 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                 <Badge variant="outline" className="font-mono text-[10px]">
                   {application.id.toUpperCase()}
                 </Badge>
+                {application.status && application.status !== "pending" && (
+                  <Badge
+                    className={`font-mono text-[10px] ${application.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                        application.status === 'declined' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                          'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      }`}
+                  >
+                    {application.status.toUpperCase()}
+                  </Badge>
+                )}
               </div>
               <div className="flex items-center gap-4 mt-0.5 text-xs text-muted-foreground font-mono">
                 <span>{formatCurrency(application.loan_request.amount)}</span>
@@ -186,22 +196,29 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
               variant="outline"
               size="sm"
               onClick={handleRequestReview}
+              disabled={!!actionLoading}
               className="font-mono text-xs bg-transparent"
             >
-              <Eye className="h-3 w-3 mr-1.5" />
+              {actionLoading === "review" ? <Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> : <Eye className="h-3 w-3 mr-1.5" />}
               REVIEW
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={handleDecline}
-              className="font-mono text-xs text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
+              disabled={!!actionLoading}
+              className="font-mono text-xs text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent disabled:opacity-50"
             >
-              <XCircle className="h-3 w-3 mr-1.5" />
+              {actionLoading === "declined" ? <Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> : <XCircle className="h-3 w-3 mr-1.5" />}
               DECLINE
             </Button>
-            <Button size="sm" onClick={handleApprove} className="font-mono text-xs">
-              <CheckCircle2 className="h-3 w-3 mr-1.5" />
+            <Button
+              size="sm"
+              onClick={handleApprove}
+              disabled={!!actionLoading}
+              className="font-mono text-xs"
+            >
+              {actionLoading === "approved" ? <Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> : <CheckCircle2 className="h-3 w-3 mr-1.5" />}
               APPROVE
             </Button>
           </div>

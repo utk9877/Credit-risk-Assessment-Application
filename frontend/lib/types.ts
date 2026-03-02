@@ -91,4 +91,5 @@ export interface Application {
   feature_contributions: FeatureContribution[]
   data_provenance: DataProvenance[]
   audit_trail: AuditEvent[]
+  status?: "pending" | "approved" | "declined" | "review"
 }

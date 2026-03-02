@@ -1,0 +1,37 @@
+INFO:     Will watch for changes in these directories: ['/Users/utkarsh/Downloads/credit-risk-mvp/backend']
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [55739] using WatchFiles
+/Users/utkarsh/Downloads/credit-risk-mvp/backend/.venv/lib/python3.14/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+INFO:     Started server process [55854]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:52744 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52975 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53056 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53056 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53056 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53056 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53183 - "GET /health HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/schemas/risk_schemas.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [55854]
+INFO:     Started server process [60643]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [60643]
+INFO:     Started server process [60668]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [60668]
+INFO:     Stopping reloader process [55739]

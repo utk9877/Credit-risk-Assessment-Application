@@ -1,0 +1,14 @@
+{
+  "name": "credit-risk-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "lint": "cd frontend && npm run lint",
+    "install:frontend": "cd frontend && npm install"
+  },
+  "description": "Credit Risk Assessment MVP - Frontend application"
+}
+

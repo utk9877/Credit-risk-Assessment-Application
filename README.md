@@ -1,130 +1,231 @@
-# Credit Risk MVP
+# Credit Risk Assessment Application
 
-A Next.js-based credit risk assessment dashboard with explainable AI features.
+An AI-powered credit risk assessment platform that helps financial institutions evaluate loan applications using machine learning, with full explainability and decision-tracking capabilities.
 
-## Credit Risk MVP
+---
 
-Full-stack minimal viable product for credit-risk assessment with explainable AI.
+## What Does This App Do?
 
-This repository contains:
-- `backend/` — FastAPI backend that hosts the ML model, persistence (SQLite), and explainability (SHAP) endpoints.
-- `frontend/` — Next.js (App Router) TypeScript frontend that calls the backend APIs.
+This application allows a loan officer (or analyst) to:
 
-This README explains how to run the project locally (macOS / zsh) and common troubleshooting notes.
+1. **Submit a loan application** with applicant details (name, income, credit score, loan amount, etc.)
+2. **Get an AI-generated risk score** — the system runs an XGBoost ML model that predicts the probability of default
+3. **Understand why** — SHAP (Explainable AI) breaks down which factors contributed most to the score (e.g., "high debt-to-income ratio increased risk by 12%")
+4. **Run what-if scenarios** — simulate how changing a factor (e.g., increasing credit score by 50 points) would affect the risk score
+5. **Approve, decline, or send for review** — take action on applications, with all decisions persisted to the database
+6. **Track everything on a dashboard** — see total applications, approval rates, risk distribution, and the status of every application
 
-Prerequisites
- - Node.js (16+ / 18+ recommended) and npm
- - Python 3.10+ (3.11/3.14 tested in the dev environment)
- - (Optional) Jupyter if you want to run the training notebook
+---
 
-Repository layout (top-level)
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | Next.js 16 (App Router), React 19, TypeScript | UI, routing, server-side rendering |
+| **UI Components** | Radix UI, Tailwind CSS, Framer Motion, Lucide Icons | Design system, animations, iconography |
+| **Backend** | FastAPI (Python) | REST API, request validation, routing |
+| **Database** | SQLAlchemy + SQLite | Persistence (applications, risk assessments, SHAP explanations) |
+| **ML Model** | XGBoost, scikit-learn | Credit risk prediction |
+| **Explainability** | SHAP | Feature contribution analysis |
+| **Notifications** | Sonner (toast) | In-app feedback for user actions |
+
+---
+
+## Project Structure
 
 ```
 credit-risk-mvp/
-├── backend/            # FastAPI backend, ML artifacts, training notebook
-├── frontend/           # Next.js app (app/ router), components, lib
-├── models/             # persisted model metadata used by backend (feature names etc.)
-└── README.md           # this file
+├── backend/
+│   ├── src/
+│   │   ├── api/
+│   │   │   ├── main.py              # FastAPI app, CORS, routes, lifespan
+│   │   │   └── routes/
+│   │   │       ├── applications.py   # CRUD + status update endpoints
+│   │   │       ├── risk_assessment.py # Risk calculation, simulation, SHAP
+│   │   │       └── simulation.py     # Simulation endpoint
+│   │   ├── db/
+│   │   │   ├── models.py            # SQLAlchemy models (Application, RiskAssessment, etc.)
+│   │   │   ├── session.py           # Database session management
+│   │   │   └── base.py              # Base model class
+│   │   ├── models/
+│   │   │   ├── credit_risk_model.py  # XGBoost training & inference
+│   │   │   ├── feature_engineering.py # Feature derivation & preprocessing
+│   │   │   └── shap_explainer.py     # SHAP explainability
+│   │   ├── schemas/
+│   │   │   └── risk_schemas.py       # Pydantic v2 request/response schemas
+│   │   └── services/
+│   │       ├── application_service.py # Application CRUD logic
+│   │       └── risk_service.py       # Risk assessment + SHAP caching
+│   ├── models/                       # Trained model artifacts
+│   │   ├── xgboost_model.pkl
+│   │   ├── preprocessor.pkl
+│   │   └── feature_names.json
+│   ├── requirements.txt
+│   └── .env                          # Database URL config
+│
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx                  # Root redirect → /dashboard
+│   │   ├── layout.tsx                # Root layout, fonts, Toaster
+│   │   ├── dashboard/page.tsx        # Dashboard with stats, charts, table
+│   │   ├── applications/
+│   │   │   ├── page.tsx              # Application list
+│   │   │   └── [id]/page.tsx         # Application detail + actions
+│   │   ├── apply/page.tsx            # Multi-step new application form
+│   │   ├── settings/page.tsx         # Configuration page
+│   │   └── login/page.tsx            # Mock login page
+│   ├── components/                   # Reusable UI components
+│   ├── lib/
+│   │   ├── api.ts                    # Backend API client
+│   │   ├── types.ts                  # TypeScript interfaces
+│   │   ├── mock-data.ts              # Demo/fallback data
+│   │   └── utils.ts                  # Utility functions
+│   ├── .env.local                    # NEXT_PUBLIC_API_URL
+│   └── next.config.mjs
+│
+└── README.md
 ```
 
-1) Backend — setup and run (development)
+---
 
-Open a terminal and change to the backend directory:
+## Getting Started
 
-```bash
-cd /Users/utkarsh/Downloads/credit-risk-mvp/backend
-# create a venv (skip if you already have .venv)
-python3 -m venv .venv
-source .venv/bin/activate
+### Prerequisites
 
-# upgrade packaging tools and install runtime deps
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
+- **Node.js** 18+ and npm
+- **Python** 3.10+ (3.11 or 3.14 recommended)
 
-# If FastAPI raises an ImportError for pydantic.TypeAdapter, install pydantic v2+:
-pip install 'pydantic>=2'
-```
-
-Start the dev server (uses `src.api.main:app`):
-
-```bash
-# make sure the backend package root is importable
-export PYTHONPATH=$(pwd)
-uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8001
-```
-
-Quick verification (in another terminal):
-
-```bash
-curl -sS http://127.0.0.1:8001/health
-curl -sS http://127.0.0.1:8001/api/applications/ | jq .
-```
-
-Notes and troubleshooting (backend)
-- If you see "Address already in use" for port 8001, find and kill the process:
-	```bash
-	lsof -nP -i :8001
-	kill <PID>
-	```
-- If you see `ModuleNotFoundError: No module named 'src'`, set `PYTHONPATH` to the backend folder when running uvicorn (see above).
-- The backend stores data in a local SQLite file (dev). The app will create tables on startup.
-- Model artifacts (trained model, preprocessor, and SHAP explainer) are expected under `backend/models/` or `models/` depending on how training was run. If missing, run the training notebook.
-
-2) Training the model (optional)
-
-Training is performed in `backend/notebooks/train_model.ipynb`. To re-train:
+### 1. Set Up the Backend
 
 ```bash
 cd backend
+
+# Create and activate a virtual environment
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements-training.txt
-# open the notebook in Jupyter and run cells to produce artifacts in models/
-jupyter notebook notebooks/train_model.ipynb
+
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Start the backend server
+export PYTHONPATH=$(pwd)
+uvicorn src.api.main:app --host 127.0.0.1 --port 8001
 ```
 
-3) Frontend — setup and run
+Verify it's running:
+```bash
+curl http://127.0.0.1:8001/health
+# → {"status":"OK"}
+```
 
-Open a new terminal and go to the frontend directory:
+### 2. Set Up the Frontend
 
 ```bash
-cd /Users/utkarsh/Downloads/credit-risk-mvp/frontend
+cd frontend
 
-# ensure the frontend knows where the backend is running
-export NEXT_PUBLIC_API_URL="http://127.0.0.1:8001"
-
-# install dependencies (only once)
+# Install dependencies (first time only)
 npm install
 
-# run Next dev server on port 3001 (this project uses 3001 in dev)
+# Start the dev server
 PORT=3001 npm run dev
 ```
 
-Open the app in your browser: http://localhost:3001/applications
+Open your browser: **http://localhost:3001**
 
-Browser debugging
-- The frontend logs API calls from `frontend/lib/api.ts` to the browser console. These logs help diagnose "Failed to fetch" and invalid `application_id` issues.
-- If you see CORS errors, confirm the backend `src.api.main` includes CORSMiddleware and that the origin (http://localhost:3001) is allowed.
+---
 
-4) Useful commands
-- Kill a process using port 8001: `lsof -nP -i :8001` then `kill <PID>`
-- Start backend in background (example):
-	```bash
-	cd backend
-	source .venv/bin/activate
-	nohup python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8001 > uvicorn.log 2>&1 &
-	```
+## API Endpoints
 
-5) Development notes
-- The backend uses SQLAlchemy + SQLite for dev and persists SHAP explanations in a `shap_explanations` table.
-- The frontend uses Next.js App Router and TypeScript. Route params from Next are strings — API helpers coerce/validate IDs.
-- There was a pydantic v1 vs v2 compatibility issue during development. The fast fix is installing `pydantic>=2` in your venv; for long-term stability, pin compatible versions in `requirements.txt`.
+### Applications
 
-6) Where to look for code
-- Backend entry: `backend/src/api/main.py`
-- Backend routes: `backend/src/api/routes/*.py`
-- Backend services: `backend/src/services/*.py`
-- Frontend entry: `frontend/app/page.tsx` and `frontend/app/applications/page.tsx`
-- Frontend API wrapper: `frontend/lib/api.ts`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/applications/` | List all applications |
+| `POST` | `/api/applications/` | Create a new application |
+| `GET` | `/api/applications/{id}` | Get a single application |
+| `PATCH` | `/api/applications/{id}/status` | Update status (approve/decline/review) |
 
-If you'd like, I can: start the backend and frontend (and verify /health and the Applications page) from here, or update the README further with a quick troubleshooting checklist tailored to errors you've seen. Which would you prefer?
+### Risk Assessments
 
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/risk-assessments/calculate` | Run ML model on an application |
+| `POST` | `/api/risk-assessments/simulate` | Run a what-if scenario (not persisted) |
+| `GET` | `/api/risk-assessments/application/{id}` | Get risk assessments for an application |
+| `GET` | `/api/risk-assessments/application/{id}/explainability` | Get SHAP feature contributions |
+
+### System
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Health check |
+| `GET` | `/` | API info and available endpoints |
+| `GET` | `/docs` | Auto-generated Swagger UI |
+
+---
+
+## Key Features Explained
+
+### Risk Scoring
+
+When a risk assessment is triggered, the backend:
+1. Loads the application data from the database
+2. Runs it through the feature engineering pipeline (`feature_engineering.py`)
+3. Feeds the processed features into the trained XGBoost model
+4. Returns a **probability of default** (0.0 to 1.0)
+5. The frontend converts this into a **risk score** (0–1000, where higher = safer)
+
+### Explainability (SHAP)
+
+After scoring, the system generates SHAP values that show how each feature pushed the prediction up or down. For example:
+- "Credit Score: 712" → reduced risk by 15%
+- "Debt-to-Income: 28%" → increased risk by 12%
+
+These are displayed as a bar chart on the application detail page.
+
+### Scenario Simulation
+
+The "Scenario Sandbox" lets you adjust inputs (credit score, income, DTI ratio, etc.) and see how the risk score would change — without saving anything to the database.
+
+### Application Status Tracking
+
+Every application has a `status` field that tracks the analyst's decision:
+- **Pending** — no action taken yet
+- **Review** — flagged for further review
+- **Approved** — application approved
+- **Declined** — application declined
+
+Status changes are persisted to the database and reflected across the dashboard, application list, and detail pages immediately.
+
+---
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+```
+DATABASE_URL=sqlite:///./dev.db
+```
+
+### Frontend (`frontend/.env.local`)
+```
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8001
+```
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `Address already in use` (port 8001 or 3001) | Run `lsof -ti :8001 \| xargs kill -9` to free the port |
+| `ModuleNotFoundError: No module named 'src'` | Set `PYTHONPATH` to the backend folder: `export PYTHONPATH=$(pwd)` |
+| CORS errors in browser console | Confirm the backend `main.py` includes `http://localhost:3001` in allowed origins |
+| Frontend shows empty data | Make sure the backend is running on port 8001 before starting the frontend |
+| `pydantic` import errors | Ensure pydantic v2+ is installed: `pip install 'pydantic>=2'` |
+
+---
+
+## License
+
+This project is for educational and demonstration purposes.

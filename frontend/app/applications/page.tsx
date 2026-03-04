@@ -4,6 +4,9 @@ import api from "@/lib/api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Application } from "@/lib/types"
 
+// Always fetch fresh data so status changes are reflected immediately
+export const dynamic = "force-dynamic"
+
 export default async function ApplicationsPage() {
   let applications: Application[] = []
   try {

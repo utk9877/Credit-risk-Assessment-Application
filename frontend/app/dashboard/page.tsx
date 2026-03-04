@@ -5,6 +5,10 @@ import api from "@/lib/api"
 import { notFound } from "next/navigation"
 import type { Application } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+
+// Always fetch fresh data on every request so status changes are reflected immediately
+export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
   let applications: Application[] = []
@@ -17,9 +21,10 @@ export default async function DashboardPage() {
   }
 
   const totalApplications = applications.length
-  const pendingReview = applications.filter((a) => a.risk_assessment.recommended_action === "review").length
-  const approved = applications.filter((a) => a.risk_assessment.recommended_action === "approve").length
-  const declined = applications.filter((a) => a.risk_assessment.recommended_action === "decline").length
+  // Use the persisted user decision (status) instead of the ML recommendation
+  const pendingReview = applications.filter((a) => !a.status || a.status === "pending" || a.status === "review").length
+  const approved = applications.filter((a) => a.status === "approved").length
+  const declined = applications.filter((a) => a.status === "declined").length
   const avgScore = totalApplications > 0 ? Math.round(applications.reduce((sum, a) => sum + a.risk_assessment.score, 0) / totalApplications) : 0
 
   const riskDistribution = {
@@ -118,17 +123,26 @@ export default async function DashboardPage() {
                     <div key={app.id} className="flex items-center justify-between text-xs font-mono">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-2 h-2 border ${
-                            app.risk_assessment.risk_tier === "low"
-                              ? "border-green-500 bg-green-500"
-                              : app.risk_assessment.risk_tier === "medium"
-                                ? "border-yellow-500 bg-yellow-500"
-                                : app.risk_assessment.risk_tier === "high"
-                                  ? "border-orange-500 bg-orange-500"
-                                  : "border-red-500 bg-red-500"
-                          }`}
+                          className={`w-2 h-2 border ${app.risk_assessment.risk_tier === "low"
+                            ? "border-green-500 bg-green-500"
+                            : app.risk_assessment.risk_tier === "medium"
+                              ? "border-yellow-500 bg-yellow-500"
+                              : app.risk_assessment.risk_tier === "high"
+                                ? "border-orange-500 bg-orange-500"
+                                : "border-red-500 bg-red-500"
+                            }`}
                         />
                         <span>{app.applicant.name}</span>
+                        {app.status && app.status !== "pending" && (
+                          <Badge
+                            className={`font-mono text-[9px] px-1.5 py-0 ${app.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                app.status === 'declined' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                              }`}
+                          >
+                            {app.status.toUpperCase()}
+                          </Badge>
+                        )}
                       </div>
                       <div className="flex items-center gap-4 text-muted-foreground">
                         <span>{app.loan_request.purpose}</span>

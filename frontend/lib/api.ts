@@ -106,7 +106,7 @@ export async function getApplications(): Promise<Application[]> {
           risk_tier: tier as any,
           confidence: risk?.confidence ?? 0.8,
           recommended_action:
-            risk && Number(risk.score) < 0.2 ? "review" : "approve",
+            !risk ? "review" : Number(risk.score) < 0.1 ? "approve" : Number(risk.score) < 0.3 ? "review" : "decline",
           timestamp: risk?.created_at ?? new Date().toISOString(),
         },
         feature_contributions: featureContributions,
@@ -217,7 +217,7 @@ export async function getApplicationById(id: string | number): Promise<Applicati
       risk_tier: tier as any,
       confidence: risk?.confidence ?? 0.8,
       recommended_action:
-        risk && Number(risk.score) < 0.2 ? "review" : "approve",
+        !risk ? "review" : Number(risk.score) < 0.1 ? "approve" : Number(risk.score) < 0.3 ? "review" : "decline",
       timestamp: risk?.created_at ?? new Date().toISOString(),
     },
     feature_contributions: featureContributions,

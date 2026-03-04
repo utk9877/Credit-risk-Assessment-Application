@@ -31,6 +31,13 @@ const actionColors = {
   decline: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
 }
 
+const statusColors: Record<string, string> = {
+  approved: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  declined: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+  review: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+  pending: "bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400",
+}
+
 export function ApplicationsTable({ applications }: ApplicationsTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [sortField, setSortField] = useState<SortField>("date")
@@ -142,7 +149,8 @@ export function ApplicationsTable({ applications }: ApplicationsTableProps) {
                 </Button>
               </TableHead>
               <TableHead className="font-mono text-[10px] tracking-widest">TIER</TableHead>
-              <TableHead className="font-mono text-[10px] tracking-widest">ACTION</TableHead>
+              <TableHead className="font-mono text-[10px] tracking-widest">STATUS</TableHead>
+              <TableHead className="font-mono text-[10px] tracking-widest">RECOMMENDATION</TableHead>
               <TableHead className="font-mono text-[10px] tracking-widest">
                 <Button
                   variant="ghost"
@@ -191,6 +199,11 @@ export function ApplicationsTable({ applications }: ApplicationsTableProps) {
                     className={cn("font-mono text-[10px]", riskTierColors[app.risk_assessment.risk_tier])}
                   >
                     {app.risk_assessment.risk_tier.toUpperCase()}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge className={cn("font-mono text-[10px]", statusColors[app.status || "pending"])}>
+                    {(app.status || "PENDING").toUpperCase()}
                   </Badge>
                 </TableCell>
                 <TableCell>

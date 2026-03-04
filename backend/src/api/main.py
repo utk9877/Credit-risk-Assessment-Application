@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -32,17 +33,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Credit Risk - Backend (FastAPI)", lifespan=lifespan)
 
-# Allow the frontend dev server to call the API (adjust origins as needed)
+# CORS: configurable via CORS_ORIGINS env var (comma-separated), defaults to localhost dev
+_default_origins = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001"
+cors_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", _default_origins).split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3001",
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

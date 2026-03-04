@@ -24,13 +24,13 @@ export default function LoginPage() {
     setError("")
     setIsLoading(true)
 
-    // Mock authentication
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // In production, replace with a real authentication provider (e.g., OAuth, JWT)
+    await new Promise((resolve) => setTimeout(resolve, 800))
 
-    if (email === "admin@credit.io" && password === "password") {
+    if (email && password) {
       router.push("/dashboard")
     } else {
-      setError("Invalid credentials. Try admin@credit.io / password")
+      setError("Please enter your email and password")
       setIsLoading(false)
     }
   }
@@ -120,7 +120,7 @@ export default function LoginPage() {
 
               <div className="text-center">
                 <p className="text-[10px] font-mono text-muted-foreground">
-                  Demo credentials: admin@credit.io / password
+                  Credit Risk Assessment Platform
                 </p>
               </div>
             </form>

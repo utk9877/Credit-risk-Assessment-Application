@@ -89,7 +89,7 @@ def prepare_xy(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
 
     # Normalize target to 0/1 where 1 indicates bad credit (or positive class). We'll map strings to binary.
     y = df["target"].copy()
-    if y.dtype == object:
+    if not pd.api.types.is_numeric_dtype(y):
         # map common labels
         y = y.map({"good": 0, "bad": 1, "positive": 1, "negative": 0, "1": 1, "0": 0}).fillna(y)
         # If still strings like '1'/'2' map numerically
@@ -280,8 +280,9 @@ def _compute_risk_values(prob_default: float) -> Dict[str, Any]:
     else:
         tier = "CRITICAL"
 
-    # confidence: 1 - 2 * abs(prob_default - 0.5)
-    confidence = 1.0 - 2.0 * abs(float(prob_default) - 0.5)
+    # confidence: how far the prediction is from the 0.5 decision boundary (2 * |p - 0.5|),
+    # so a prediction near 0 or 1 (model is sure) scores high, and one near 0.5 (model is unsure) scores low.
+    confidence = 2.0 * abs(float(prob_default) - 0.5)
     # clamp to [0,1]
     confidence = max(0.0, min(1.0, confidence))
 

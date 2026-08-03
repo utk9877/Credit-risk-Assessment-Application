@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any, Dict
 import numpy as np
 import pandas as pd
@@ -18,8 +19,14 @@ def build_feature_vector_from_payload(payload: Dict[str, Any], preprocessor) -> 
 
     Returns: numpy array (1D) ready to pass to model.predict_proba
     """
+    # Coerce Decimal values (e.g. from SQLAlchemy Numeric columns) to float so pandas/numpy
+    # arithmetic in derive_features doesn't choke on mixed Decimal/float operands.
+    coerced_payload = {
+        k: float(v) if isinstance(v, Decimal) else v for k, v in payload.items()
+    }
+
     # Build a single-row DataFrame from payload
-    df = pd.DataFrame([payload])
+    df = pd.DataFrame([coerced_payload])
 
     # Apply derived features used during training
     df = derive_features(df)

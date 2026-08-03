@@ -36,18 +36,8 @@ def calculate_risk(payload: RiskAssessmentCreate, db: Session = Depends(get_db))
         logger.warning("Application not found for id %s", payload.application_id)
         raise HTTPException(status_code=404, detail="Application not found")
 
-    # Build payload dict from application model for prediction
-    app_dict = {
-        k: getattr(app, k)
-        for k in [
-            "applicant_name",
-            "applicant_email",
-            "requested_amount",
-            "purpose",
-            "created_at",
-        ]
-        if hasattr(app, k)
-    }
+    # Build payload dict from all application columns for prediction
+    app_dict = {c.name: getattr(app, c.name) for c in app.__table__.columns}
 
     try:
         pred = credit_risk_model.predict_from_payload(app_dict)
@@ -165,7 +155,7 @@ def get_risks_by_application(application_id: int, db: Session = Depends(get_db))
             # Calculate confidence from score if available
             if risk.score is not None:
                 prob = float(risk.score)
-                confidence = 1.0 - 2.0 * abs(prob - 0.5)
+                confidence = 2.0 * abs(prob - 0.5)
                 confidence = max(0.0, min(1.0, confidence))
                 risk.confidence = confidence
     return risks
